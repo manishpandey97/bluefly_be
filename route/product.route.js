@@ -23,9 +23,8 @@ productRouter.get('/', async (req, res) => {
 })
 
 productRouter.post('/create', authTaskRole(["seller", "admin"]), async (req, res) => {
-    const { title, brand_name, product_type, frame_type, frame_shape, model_no, frame_size,
-        frame_width, frame_dimensions, frame_colour, weight, weight_group, material, frame_material,
-        temple_material, prescription_type, frame_style, imgaes } = req.body;
+    const { title, brand_name, price, description, neck_type, dress_type, color, sleeve_type, material, wash,
+        origin_countery, imgaes } = req.body;
     const userId = req.user._id;
 
     try {
@@ -34,9 +33,8 @@ productRouter.post('/create', authTaskRole(["seller", "admin"]), async (req, res
             return res.status(400).send(`product  already created:${productExists}`)
         }
         const productCreate = await productModel({
-            title, brand_name, product_type, frame_type, frame_shape, model_no, frame_size,
-            frame_width, frame_dimensions, frame_colour, weight, weight_group, material, frame_material,
-            temple_material, prescription_type, frame_style, imgaes, userId
+            title, brand_name, price, description, neck_type, dress_type, color, sleeve_type, material, wash,
+            origin_countery, imgaes, userId
         });
 
         await productCreate.save();

@@ -23,7 +23,7 @@ userRouter.get('/', authUserRole(["admin"]), async (req, res) => {
 })
 
 userRouter.post('/register', authUserRole(["buyer", "seller", "admin"]), async (req, res) => {
-    const { fname, lname, mobile_no, email, password, role } = req.body;
+    const { name,  email, password, role } = req.body;
     try {
         const userExists = await userModel.findOne({ email });
         if (userExists) {
@@ -34,7 +34,7 @@ userRouter.post('/register', authUserRole(["buyer", "seller", "admin"]), async (
                 return res.status(400).send(`err in hasing:${err}`)
             }
             if (hash) {
-                const registerUser = userModel({ fname, lname, mobile_no, email, password: hash, role });
+                const registerUser = userModel({ name, mobile_no, email, password: hash, role });
                 await registerUser.save();
                 return res.status(200).send(`user register successfully:${registerUser}`)
             }
@@ -47,7 +47,7 @@ userRouter.post('/register', authUserRole(["buyer", "seller", "admin"]), async (
 })
 
 userRouter.post('/login', authUserRole(["buyer", "seller", "admin"]), async (req, res) => {
-    const { mobile_no, email, password } = req.body;
+    const { email, password } = req.body;
     try {
         const userLogin = await userModel.findOne({  email });
         if (!userLogin) {
@@ -75,7 +75,7 @@ userRouter.post('/login', authUserRole(["buyer", "seller", "admin"]), async (req
 
 
 userRouter.post('/logout', authUserRole(["buyer", "seller", "admin"]), async (req, res) => {
-    const { mobile_no, email } = req.body;
+    const {email } = req.body;
     const accesstoken = req.headers.authorization?.split(" ")[1];
 
     try {
