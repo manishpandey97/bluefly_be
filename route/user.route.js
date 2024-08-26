@@ -27,21 +27,25 @@ userRouter.post('/register', authUserRole(["buyer", "seller", "admin"]), async (
     try {
         const userExists = await userModel.findOne({ email });
         if (userExists) {
-            return res.status(400).send(`user  already register:${userExists}`)
+            console.log(`user  already register:${userExists}`)
+            return res.status(400).send(`user  already register:${userExists}`);
         }
         bcrypt.hash(password, 5, async (err, hash) => {
             if (err) {
+                console.log(`err in hasing:${err}`)
                 return res.status(400).send(`err in hasing:${err}`)
             }
             if (hash) {
-                const registerUser = userModel({ name, mobile_no, email, password: hash, role });
+                const registerUser = userModel({ name, email, password: hash, role });
                 await registerUser.save();
+                console.log(`user register successfully:${registerUser}`)
                 return res.status(200).send(`user register successfully:${registerUser}`)
             }
         })
 
 
     } catch (error) {
+        console.log(`error during error registering  is :${error}`)
         return res.status(500).send(`error during error registering  is :${error}`)
     }
 })
@@ -58,9 +62,9 @@ userRouter.post('/login', authUserRole(["buyer", "seller", "admin"]), async (req
                 return res.status(400).send(`err in comapreing password:${err}`)
             }
             if (result) {
-                const accesstoken = jwt.sign({ userId: userLogin._id, password, email, mobile_no },
+                const accesstoken = jwt.sign({ userId: userLogin._id, password, email},
                     process.env.secret_Key1, { expiresIn: '1h' });
-                const refreshtoken = jwt.sign({ userId: userLogin._id, password, email, mobile_no },
+                const refreshtoken = jwt.sign({ userId: userLogin._id, password, email },
                     process.env.secret_Key1, { expiresIn: '1d' });
                 if (!accesstoken && !refreshtoken) {
                     return res.status(500).send(`error in token regentration:${err}`)
@@ -79,7 +83,7 @@ userRouter.post('/logout', authUserRole(["buyer", "seller", "admin"]), async (re
     const accesstoken = req.headers.authorization?.split(" ")[1];
 
     try {
-        const userLogout = await userModel.findOne({ mobile_no, email });
+        const userLogout = await userModel.findOne({email });
 
         if (!userLogout) {
             return res.status(400).send(`please login first !`)

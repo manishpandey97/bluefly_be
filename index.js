@@ -13,11 +13,11 @@ const authUserTask = require('./middleware/authUserTask.middleware');
 const productRouter = require('./route/product.route');
 
 
-  
+
 app.use(cors({ origin: '*' }))
 app.use(express.json())
-app.use('/user',userRouter)
-app.use('/product',authUserTask,productRouter)
+app.use('/user', userRouter)
+app.use('/product', authUserTask, productRouter)
 
 app.get('/', (req, res) => {
     try {
@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
     }
 })
 
-app.listen(PORT, async() => {
+app.listen(PORT, async () => {
     try {
         await userConnect;
         await tokenConnect;
