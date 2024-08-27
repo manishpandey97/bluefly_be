@@ -51,9 +51,9 @@ userRouter.post('/register', authUserRole(["buyer", "seller", "admin"]), async (
 })
 
 userRouter.post('/login', authUserRole(["buyer", "seller", "admin"]), async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password ,mobile_no} = req.body;
     try {
-        const userLogin = await userModel.findOne({  email });
+        const userLogin = await userModel.findOne({  email,mobile_no });
         if (!userLogin) {
             console.log(`please register first`)
             return res.status(400).send(`please register first !`)
@@ -64,15 +64,16 @@ userRouter.post('/login', authUserRole(["buyer", "seller", "admin"]), async (req
                 return res.status(400).send(`err in comapreing password:${err}`)
             }
             if (result) {
-                const accesstoken = jwt.sign({ userId: userLogin._id, password, email},
-                    process.env.secret_Key1, { expiresIn: '1h' });
-                const refreshtoken = jwt.sign({ userId: userLogin._id, password, email },
-                    process.env.secret_Key1, { expiresIn: '1d' });
+                const accesstoken = jwt.sign({ userId: userLogin._id, password, email,mobile_no},
+                    process.env.secret_key1, { expiresIn: '1h' });
+                const refreshtoken = jwt.sign({ userId: userLogin._id, password, email,mobile_no },
+                    process.env.secret_key2, { expiresIn: '1d' });
                 if (!accesstoken && !refreshtoken) {
                   console.log( `error in token regentration`)
                     return res.status(500).send(`error in token regentration`)
                 }
-                console.log({"msG": `user login successfully`, "accesstoken": accesstoken, "refreshtoken": refreshtoken })
+                console.log({"email":userLogin.email,"msG": `user login successfully`, "accesstoken": accesstoken, 
+                    "refreshtoken": refreshtoken })
                 return res.status(200).json({ "msG": `user login successfully`, "accesstoken": accesstoken, "refreshtoken": refreshtoken })
             }
         })
