@@ -2,7 +2,7 @@ const { default: mongoose } = require("mongoose");
 
 const productSchema = mongoose.Schema({
     title: { type: String, required: true, unique: true },
-    gender:{type:String,default:"male",enum:["male,female"]},
+    gender:{type:String,default:"male",enum:["male","female"]},
     brand_name: { type: String, required: true },
     cateory:{ type: String, required: true },
     price: { type: String, required: true },

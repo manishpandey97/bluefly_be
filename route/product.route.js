@@ -22,9 +22,9 @@ productRouter.get('/', async (req, res) => {
     }
 })
 
-productRouter.post('/create', authTaskRole(["seller", "admin"]), async (req, res) => {
+productRouter.post('/create', authTaskRole(["seller"]), async (req, res) => {
     const { title, brand_name, price, description, neck_type, dress_type, color, sleeve_type, material, wash,
-        origin_countery, imgaes,gender } = req.body;
+        origin_countery, imgaes,gender, cateory } = req.body;
     const userId = req.user._id;
 
     try {
@@ -34,14 +34,14 @@ productRouter.post('/create', authTaskRole(["seller", "admin"]), async (req, res
         }
         const productCreate = await productModel({
             title, brand_name,gender, price, description, neck_type, dress_type, color, sleeve_type, material, wash,
-            origin_countery, imgaes, userId
+            origin_countery, imgaes, cateory, userId
         });
 
         await productCreate.save();
         return res.status(200).send(`product  created sccessfully:${productCreate}`)
 
     } catch (error) {
-        return res.status(500).send(`error during  creating  is :${error}`)
+        return res.status(500).send(`error during  creating product is :${error}`)
     }
 })
 

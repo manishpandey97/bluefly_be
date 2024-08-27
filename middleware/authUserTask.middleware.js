@@ -8,7 +8,7 @@ const authUserTask = (req, res, next) => {
     if (!accesstoken) {
       return res.status(400).send(`access token not found!`)
     }
-
+console.log(process.env.secret_Key1)
     jwt.verify(accesstoken, process.env.secret_Key1, async (err, decoded) => {
       if (err) {
         return res.status(400).send(`error during access token verifying:${err}`)
