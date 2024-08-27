@@ -23,9 +23,9 @@ userRouter.get('/', authUserRole(["admin"]), async (req, res) => {
 })
 
 userRouter.post('/register', authUserRole(["buyer", "seller", "admin"]), async (req, res) => {
-    const { name,  email, password, role } = req.body;
+    const { name,  email, password, role,mobile_no } = req.body;
     try {
-        const userExists = await userModel.findOne({ email });
+        const userExists = await userModel.findOne({ email, mobile_no});
         if (userExists) {
             console.log(`user  already register:${userExists}`)
             return res.status(400).send(`user  already register:${userExists}`);
@@ -36,7 +36,7 @@ userRouter.post('/register', authUserRole(["buyer", "seller", "admin"]), async (
                 return res.status(400).send(`err in hasing:${err}`)
             }
             if (hash) {
-                const registerUser = userModel({ name, email, password: hash, role });
+                const registerUser = userModel({ name, email, password: hash, role,mobile_no });
                 await registerUser.save();
                 console.log(`user register successfully:${registerUser}`)
                 return res.status(200).send(`user register successfully:${registerUser}`)
@@ -55,10 +55,12 @@ userRouter.post('/login', authUserRole(["buyer", "seller", "admin"]), async (req
     try {
         const userLogin = await userModel.findOne({  email });
         if (!userLogin) {
+            console.log(`please register first`)
             return res.status(400).send(`please register first !`)
         }
         bcrypt.compare(password, userLogin.password, async (err, result) => {
             if (err) {
+                console.log(`err in comapreing password:${err}`)
                 return res.status(400).send(`err in comapreing password:${err}`)
             }
             if (result) {
@@ -67,12 +69,15 @@ userRouter.post('/login', authUserRole(["buyer", "seller", "admin"]), async (req
                 const refreshtoken = jwt.sign({ userId: userLogin._id, password, email },
                     process.env.secret_Key1, { expiresIn: '1d' });
                 if (!accesstoken && !refreshtoken) {
-                    return res.status(500).send(`error in token regentration:${err}`)
+                  console.log( `error in token regentration`)
+                    return res.status(500).send(`error in token regentration`)
                 }
+                console.log({"msG": `user login successfully`, "accesstoken": accesstoken, "refreshtoken": refreshtoken })
                 return res.status(200).json({ "msG": `user login successfully`, "accesstoken": accesstoken, "refreshtoken": refreshtoken })
             }
         })
     } catch (error) {
+        console.log(`error during  login  is :${error}`)
         return res.status(500).send(`error during  login  is :${error}`)
     }
 })
