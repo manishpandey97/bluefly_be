@@ -24,7 +24,7 @@ productRouter.get('/', async (req, res) => {
 
 productRouter.post('/create', authTaskRole(["seller", "admin"]), async (req, res) => {
     const { title, brand_name, price, description, neck_type, dress_type, color, sleeve_type, material, wash,
-        origin_countery, imgaes } = req.body;
+        origin_countery, imgaes,gender } = req.body;
     const userId = req.user._id;
 
     try {
@@ -33,7 +33,7 @@ productRouter.post('/create', authTaskRole(["seller", "admin"]), async (req, res
             return res.status(400).send(`product  already created:${productExists}`)
         }
         const productCreate = await productModel({
-            title, brand_name, price, description, neck_type, dress_type, color, sleeve_type, material, wash,
+            title, brand_name,gender, price, description, neck_type, dress_type, color, sleeve_type, material, wash,
             origin_countery, imgaes, userId
         });
 
