@@ -15,13 +15,13 @@ const productRouter = require('./route/product.route');
 
 
 app.use(cors({
-    origin: 'http://localhost:5173', // Allow requests from your frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    credentials: true, // If you need to send cookies or authorization headers
+    origin: 'http://localhost:5173', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'], 
+    credentials: true, 
 }))
 app.use(express.json())
-app.use('/user', userRouter)
-app.use('/product', authUserTask, productRouter)
+app.use('/user',userRouter)
+app.use('/product', productRouter)
 
 app.get('/', (req, res) => {
     try {
@@ -29,6 +29,19 @@ app.get('/', (req, res) => {
     } catch (error) {
         return res.status(500).send(`server not working fine:${error}`);
 
+    }
+})
+
+productRouter.get('/', async (req, res) => {
+    try {
+        const products = await productModel.find();
+        if (!products) {
+            return res.status(400).send(`products not found`)
+        }
+        return res.status(200).json({ 'products': products })
+
+    } catch (error) {
+        return res.status(500).send(`products not found and error is :${error}`)
     }
 })
 

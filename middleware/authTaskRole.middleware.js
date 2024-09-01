@@ -1,16 +1,16 @@
 const authTaskRole = (authoriedTaskRole) => {
 
     return (req, res, next) => {
-       
+        const role = req.user.role;
         try {
-            const role=req.user.role;
-            if(!role){
+
+            if (!role) {
                 console.log(`role not found for auth!`);
                 return res.status(400).send(`role not found for auth!`);
             }
-            if(authoriedTaskRole.includes(role)){
+            if (authoriedTaskRole.includes(role)) {
                 next()
-            }else{
+            } else {
                 console.log(`your are not authorized for this action!`);
                 return res.status(400).send(`your are not authorized for this action!`);
             }

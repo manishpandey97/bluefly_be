@@ -1,9 +1,11 @@
 const authUserRole = (authoriedRole) => {
     return (req, res, next) => {
         const { name, email, password, role } = req.body
+       
         try {
+            console.log("role",role);
             if (!role) {
-                return res.status(400).send(`user role not found for user role auth`);
+                return res.status(400).send(`user role not found for  auth`);
             }
             if (authoriedRole.includes(role)) {
                 next();
