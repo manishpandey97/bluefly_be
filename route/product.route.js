@@ -3,15 +3,17 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 
-const productModel = require("../model/product.model");
+
 const tokenModel = require('../model/token.model');
 const authTaskRole = require('../middleware/authTaskRole.middleware');
 const userModel = require('../model/user.model');
 const authUserTask = require('../middleware/authUserTask.middleware');
+const productModel = require('../model/product.model');
+
 
 const productRouter = express.Router();
 
-productRouter.get('/product', async (req, res) => {
+productRouter.get('/', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -30,8 +32,7 @@ productRouter.get('/product', async (req, res) => {
             if (req.query.maxPrice) filter.price.$lte = parseFloat(req.query.maxPrice);
         }
 
-        const products = await productModel.find(filter)
-            .skip(skip)
+        const products = await productModel.find(filter).skip(skip)
             .limit(limit)
             .sort({ [sortBy]: sortOrder });
         if (!products) {
@@ -48,7 +49,7 @@ productRouter.get('/product', async (req, res) => {
         });
 
     } catch (error) {
-        consolr.log(`products not found and error is :${error}`)
+        console.log(`products not found and error is :${error}`)
         res.status(500).json({ message: error.message });
     }
 });
