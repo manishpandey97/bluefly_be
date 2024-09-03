@@ -5,7 +5,7 @@ const generateProducts = async () => {
     await mongoose.connect(`mongodb+srv://manish123:manish1234@cluster0.7sj0y25.mongodb.net/bluefly?retryWrites=true&w=majority&appName=Cluster0`,
         { useNewUrlParser: true, useUnifiedTopology: true });
 
-    const products = Array.from({ length: 500 }).map((_, index) => ({
+    const products = Array.from({ length: 100 }).map((_, index) => ({
         _id: new mongoose.Types.ObjectId(),
         title: `Product ${index + 1}`,
         gender: ['Male', 'Female', 'Unisex'][Math.floor(Math.random() * 3)],
@@ -59,7 +59,7 @@ const generateProducts = async () => {
         }));
 
     await productModel.insertMany(products);
-    console.log('500 products created!');
+    console.log('100 products created!');
     mongoose.disconnect();
 };
 

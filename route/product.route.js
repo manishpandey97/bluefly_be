@@ -55,23 +55,6 @@ productRouter.get('/', async (req, res) => {
 });
 
 
-// productRouter.get('/', async (req, res) => {
-//     try {
-//         const products = await productModel.find();
-//         if (!products) {
-//             console.log(`products not found`)
-//             return res.status(400).send(`products not found`)
-//         }
-//         console.log(`products getting successfully!`)
-//         return res.status(200).json({ 'products': products })
-
-//     } catch (error) {
-//         consolr.log(`products not found and error is :${error}`)
-//         return res.status(500).send(`products not found and error is :${error}`)
-//     }
-// })
-
-
 productRouter.get('/:id', authUserTask, async (req, res) => {
     const { id } = req.params;
     console.log(id)
