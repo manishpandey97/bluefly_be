@@ -11,21 +11,67 @@ const authUserTask = require('../middleware/authUserTask.middleware');
 
 const productRouter = express.Router();
 
-productRouter.get('/', async (req, res) => {
+productRouter.get('/product', async (req, res) => {
     try {
-        const products = await productModel.find();
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const sortBy = req.query.sort || 'createdAt';
+        const sortOrder = req.query.order === 'desc' ? -1 : 1;
+
+        // Filter criteria
+        const filter = {};
+        if (req.query.category) filter.category = req.query.category;
+        if (req.query.brand_name) filter.brand_name = req.query.brand_name;
+        if (req.query.minPrice || req.query.maxPrice) {
+            filter.price = {};
+            if (req.query.minPrice) filter.price.$gte = parseFloat(req.query.minPrice);
+            if (req.query.maxPrice) filter.price.$lte = parseFloat(req.query.maxPrice);
+        }
+
+        const products = await productModel.find(filter)
+            .skip(skip)
+            .limit(limit)
+            .sort({ [sortBy]: sortOrder });
         if (!products) {
+            console.log(`products not found`)
             return res.status(400).send(`products not found`)
         }
-        return res.status(200).json({ 'products': products })
+        const totalProducts = await productModel.countDocuments(filter);
+        console.log(`products getting successfully!`)
+        res.status(200).json({
+            products,
+            totalPages: Math.ceil(totalProducts / limit),
+            currentPage: page,
+            totalProducts
+        });
 
     } catch (error) {
-        return res.status(500).send(`products not found and error is :${error}`)
+        consolr.log(`products not found and error is :${error}`)
+        res.status(500).json({ message: error.message });
     }
-})
+});
 
 
-productRouter.get('/:id', authUserTask,async (req, res) => {
+// productRouter.get('/', async (req, res) => {
+//     try {
+//         const products = await productModel.find();
+//         if (!products) {
+//             console.log(`products not found`)
+//             return res.status(400).send(`products not found`)
+//         }
+//         console.log(`products getting successfully!`)
+//         return res.status(200).json({ 'products': products })
+
+//     } catch (error) {
+//         consolr.log(`products not found and error is :${error}`)
+//         return res.status(500).send(`products not found and error is :${error}`)
+//     }
+// })
+
+
+productRouter.get('/:id', authUserTask, async (req, res) => {
     const { id } = req.params;
     console.log(id)
     try {
@@ -45,7 +91,7 @@ productRouter.get('/:id', authUserTask,async (req, res) => {
 
 
 
-productRouter.get('/userproduct/:id',authUserTask, async (req, res) => {
+productRouter.get('/userproduct/:id', authUserTask, async (req, res) => {
     const { id } = req.params;
     try {
         const products = await productModel.find({ userId: id });
@@ -64,7 +110,7 @@ productRouter.get('/userproduct/:id',authUserTask, async (req, res) => {
 
 
 
-productRouter.post('/create', [authUserTask,authTaskRole(["seller"])], async (req, res) => {
+productRouter.post('/create', [authUserTask, authTaskRole(["seller"])], async (req, res) => {
     const { gender, category, subCategoryCloth, subCategoryShoes, subCategoryHandbag, subCategorySunglass,
         subCategoryDesigners, subCategoryJewelryWatch, subCategoryAccessories, title, brand_name, price, description,
         neck_type, dress_type, color, sleeve_type, material, wash, origin_countery, imgaes,
@@ -95,7 +141,7 @@ productRouter.post('/create', [authUserTask,authTaskRole(["seller"])], async (re
 })
 
 
-productRouter.patch('/update/:id', [authUserTask,authTaskRole(["seller", "admin"])], async (req, res) => {
+productRouter.patch('/update/:id', [authUserTask, authTaskRole(["seller", "admin"])], async (req, res) => {
     const payload = req.body;
     const userId = req.user._id;
     const productId = req.params.id;
@@ -129,7 +175,7 @@ productRouter.patch('/update/:id', [authUserTask,authTaskRole(["seller", "admin"
 })
 
 
-productRouter.delete('/delete/:id', [authUserTask,authTaskRole(["seller", "admin"])], async (req, res) => {
+productRouter.delete('/delete/:id', [authUserTask, authTaskRole(["seller", "admin"])], async (req, res) => {
     const productId = req.params.id;
     const userId = req.user._id;
 
