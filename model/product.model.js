@@ -2,7 +2,7 @@ const { default: mongoose } = require("mongoose");
 
 const productSchema = mongoose.Schema({
     title: { type: String, required: true, unique: true },
-    gender: { type: [String], default: "Male", enum: ["Male", "Female", "Unisex"] },
+    gender: { type: [String], default: "Male", enum: ["Male", "Female", "Unisex"], unique: true },
     category: {
         type: [String], default: 'Clothing',
         enum: ['Clothing', 'Shoes', 'Handbags', 'Accessories', 'Sunglasses', 'Jewelry'],
@@ -57,7 +57,7 @@ const productSchema = mongoose.Schema({
     material: { type: [String] },
     wash: { type: [String] },
     discount: { type: Number, default: 0 },
-    size: { type: [String], default: [] },
+    size: { type: [String] },
     rating: { type: Number, default: 0 },
     //   reviews: [{ 
     //     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

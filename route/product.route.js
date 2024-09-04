@@ -55,7 +55,7 @@ productRouter.get('/', async (req, res) => {
 });
 
 
-productRouter.get('/:id', authUserTask, async (req, res) => {
+productRouter.get('/:id', async (req, res) => {
     const { id } = req.params;
     console.log(id)
     try {
