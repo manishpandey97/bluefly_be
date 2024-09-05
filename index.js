@@ -15,10 +15,13 @@ const productRouter = require('./route/product.route');
 
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://66d9e954b00b1b4ba1d32468--meek-pavlova-b4e4d3.netlify.app/'],
+    origin: ['http://localhost:5173', 'https://66d9e954b00b1b4ba1d32468--meek-pavlova-b4e4d3.netlify.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'], 
     credentials: true, 
 }))
+
+app.options('*', cors());
+
 
 app.use(express.json())
 app.use('/user',userRouter)
