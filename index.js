@@ -15,7 +15,7 @@ const productRouter = require('./route/product.route');
 
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://66d9ace589d4bc0eee31e79b--admirable-boba-e629bc.netlify.app/'],
+    origin: ['http://localhost:5173', 'https://66d9ace589d4bc0eee31e79b--admirable-boba-e629bc.netlify.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'], 
     credentials: true, 
 }))
