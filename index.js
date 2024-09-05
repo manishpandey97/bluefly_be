@@ -15,10 +15,11 @@ const productRouter = require('./route/product.route');
 
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://66d9ace589d4bc0eee31e79b--admirable-boba-e629bc.netlify.app'],
+    origin: ['http://localhost:5173', 'https://66d9e954b00b1b4ba1d32468--meek-pavlova-b4e4d3.netlify.app/'],
     methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'], 
     credentials: true, 
 }))
+
 app.use(express.json())
 app.use('/user',userRouter)
 app.use('/product', productRouter)
@@ -32,18 +33,18 @@ app.get('/', (req, res) => {
     }
 })
 
-productRouter.get('/', async (req, res) => {
-    try {
-        const products = await productModel.find();
-        if (!products) {
-            return res.status(400).send(`products not found`)
-        }
-        return res.status(200).json({ 'products': products })
+// productRouter.get('/', async (req, res) => {
+//     try {
+//         const products = await productModel.find();
+//         if (!products) {
+//             return res.status(400).send(`products not found`)
+//         }
+//         return res.status(200).json({ 'products': products })
 
-    } catch (error) {
-        return res.status(500).send(`products not found and error is :${error}`)
-    }
-})
+//     } catch (error) {
+//         return res.status(500).send(`products not found and error is :${error}`)
+//     }
+// })
 
 app.listen(PORT, async () => {
     try {
