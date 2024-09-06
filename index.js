@@ -14,17 +14,24 @@ const productRouter = require('./route/product.route');
 
 
 
-app.use(cors({
-    origin: ['http://localhost:5173', 'https://66d9e954b00b1b4ba1d32468--meek-pavlova-b4e4d3.netlify.app'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'], 
-    credentials: true, 
-}))
+// app.use(cors({
+//     origin: ['http://localhost:5173', 'https://66d9e954b00b1b4ba1d32468--meek-pavlova-b4e4d3.netlify.app'],
+//     methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'], 
+//     credentials: true, 
+// }))
 
-app.options('*', cors());
+app.use(cors(
+    {
+        origin: ['http://localhost:5173','https://admirable-boba-e629bc.netlify.app'],
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH',' POST', 'DELETE','POST'],
+        preflightContinue: false,
+        optionsSuccessStatus: 200,
+        credentials: true,
+    }))
 
 
 app.use(express.json())
-app.use('/user',userRouter)
+app.use('/user', userRouter)
 app.use('/product', productRouter)
 
 app.get('/', (req, res) => {
